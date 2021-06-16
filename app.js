@@ -35,13 +35,10 @@ app.post("/webhook", (req, res) => {
       // will only ever contain one event, so we get index 0
       let webhook_event = entry.messaging[0];
       // console.log(webhook_event);
-      let da = {
-        "text":"hello, world!"
-      }
-      
+      let sender_psid = webhook_event.sender.id;
+      console.log('Sender PSID: ' + sender_psid);
 
-      
-      
+      //callSendAPI(sender_psid, "werwer")
       
     });
 
@@ -57,9 +54,7 @@ app.post("/webhook", (req, res) => {
 app.get("/webhook", (req, res) => {
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = process.env.PAGE_ACCESS_TOKEN;
-  const FACEBOOK_PAGE_ID = 105645051758162
-  const FACEBOOK_APP_ID = 939181606878507
-  const FACEBOOK_APP_SECRET = '0a5b2b43e04bea1dab7f8a1ce0e81494'
+
   // Parse params from the webhook verification request
   let mode = req.query["hub.mode"];
   let token = req.query["hub.verify_token"];
@@ -78,3 +73,27 @@ app.get("/webhook", (req, res) => {
     }
   }
 });
+
+function callSendAPI(sender_psid, response) {
+    // Construct the message body
+    let request_body = {
+        "recipient": {
+            "id": sender_psid
+        },
+        "message": { "text": response }
+    };
+
+    // Send the HTTP request to the Messenger Platform
+    request({
+        "uri": "https://graph.facebook.com/v7.0/me/messages",
+        "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+        "method": "POST",
+        "json": request_body
+    }, (err, res, body) => {
+        if (!err) {
+            console.log('message sent!');
+        } else {
+            console.error("Unable to send message:" + err);
+        }
+    });
+}
