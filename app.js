@@ -39,14 +39,7 @@ app.post("/webhook", (req, res) => {
         "text":"hello, world!"
       }
       
-      res.say({
-        text: 'Favorite color?',
-        buttons: [
-          { type: 'postback', title: 'Red', payload: 'FAVORITE_RED' },
-          { type: 'postback', title: 'Blue', payload: 'FAVORITE_BLUE' },
-          { type: 'postback', title: 'Green', payload: 'FAVORITE_GREEN' }
-        ]
-      });
+
       
       
       
@@ -63,7 +56,7 @@ app.post("/webhook", (req, res) => {
 // Accepts GET requests at the /webhook endpoint
 app.get("/webhook", (req, res) => {
   /** UPDATE YOUR VERIFY TOKEN **/
-  const VERIFY_TOKEN = "EAANWLkIOvSsBANB08Eo81QWIgpEdAgsGOly5pNdAsSPJGTJyQqPw749j2HqKMDaE5x6NTHriRuShwfHwI3HuP6j28HdheobIpW1MPZCDIg35slH6CcgvU0f5Rgi2bG90LRZBLlT94hYxfMqnZCK9uDCGHbitSDzpDAV4sKXwSAdudk4oLoQ";
+  const VERIFY_TOKEN = process.env.PAGE_ACCESS_TOKEN;
   const FACEBOOK_PAGE_ID = 105645051758162
   const FACEBOOK_APP_ID = 939181606878507
   const FACEBOOK_APP_SECRET = '0a5b2b43e04bea1dab7f8a1ce0e81494'
