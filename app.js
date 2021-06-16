@@ -12,42 +12,40 @@
 
 // Imports dependencies and set up http server
 const request = require("request"),
-  express = require("express"),
-  body_parser = require("body-parser"),
-  app = express().use(body_parser.json()); // creates express http server
+    express = require("express"),
+    body_parser = require("body-parser"),
+    app = express().use(body_parser.json()); // creates express http server
 
 // Sets server port and logs message on success
 app.listen(process.env.PORT || 1337, () => console.log("webhook is listening"));
 
 // Accepts POST requests at /webhook endpoint
 app.post("/webhook", (req, res) => {
-  console.log('nainuuuu1111');
-  console.log('nainuuuu');
-  console.log('nainuuuu1222');
-  // Parse the request body from the POST
-  let body = req.body;
+    console.log('nainuuuu1111');
+    console.log('nainuuuu');
+    console.log('nainuuuu1222');
+    let body = req.body;
 
-  // Check the webhook event is from a Page subscription
-  if (body.object === "page") {
-    // Iterate over each entry - there may be multiple if batched
-    body.entry.forEach(function(entry) {
-      // Get the webhook event. entry.messaging is an array, but
-      // will only ever contain one event, so we get index 0
-      let webhook_event = entry.messaging[0];
-      // console.log(webhook_event);
-      let sender_psid = webhook_event.sender.id;
-      console.log('Sender PSID: ' + sender_psid);
+    if (body.object === "page") {
+        body.entry.forEach(function(entry) {
+            let webhook_event = entry.messaging[0];
+            let sender_psid = webhook_event.sender.id;
 
-      //callSendAPI(sender_psid, "werwer")
-      
-    });
 
-    // Return a '200 OK' response to all events
-    res.status(200).send("EVENT_RECEIVED");
-  } else {
-    // Return a '404 Not Found' if event is not from a page subscription
-    res.sendStatus(404);
-  }
+            // callSendAPIWithTemplate(sender_psid)
+            if (webhook_event.message) {
+                console.log(webhook_event.message)
+            } else if (webhook_event.postback) {
+                console.log(webhook_event.postback)
+            }
+
+        });
+        // Return a '200 OK' response to all events
+        res.status(200).send("EVENT_RECEIVED");
+    } else {
+        // Return a '404 Not Found' if event is not from a page subscription
+        res.sendStatus(404);
+    }
 });
 
 // Accepts GET requests at the /webhook endpoint
@@ -97,3 +95,48 @@ function callSendAPI(sender_psid, response) {
         }
     });
 }
+
+let callSendAPIWithTemplate = (sender_psid) => {
+    // document fb message template
+    // https://developers.facebook.com/docs/messenger-platform/send-messages/templates
+    let body = {
+        "recipient": {
+            "id": sender_psid
+        },
+        "message": {
+            "attachment": {
+                "type": "template",
+                "payload": {
+                    "template_type": "generic",
+                    "elements": [
+                        {
+                            "title": "Want to build sth awesome?",
+                            "image_url": "https://www.nexmo.com/wp-content/uploads/2018/10/build-bot-messages-api-768x384.png",
+                            "subtitle": "Watch more videos on my youtube channel ^^",
+                            "buttons": [
+                                {
+                                    "type": "web_url",
+                                    "url": "https://bit.ly/subscribe-haryphamdev",
+                                    "title": "Watch now"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        }
+    };
+
+    request({
+        "uri": "https://graph.facebook.com/v6.0/me/messages",
+        "qs": { "access_token": process.env.PAGE_ACCESS_TOKEN },
+        "method": "POST",
+        "json": body
+    }, (err, res, body) => {
+        if (!err) {
+            // console.log('message sent!')
+        } else {
+            console.error("Unable to send message:" + err);
+        }
+    });
+};
