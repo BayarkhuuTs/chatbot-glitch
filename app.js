@@ -38,6 +38,18 @@ app.post("/webhook", (req, res) => {
       let da = {
         "text":"hello, world!"
       }
+      
+      res.say({
+        text: 'Favorite color?',
+        buttons: [
+          { type: 'postback', title: 'Red', payload: 'FAVORITE_RED' },
+          { type: 'postback', title: 'Blue', payload: 'FAVORITE_BLUE' },
+          { type: 'postback', title: 'Green', payload: 'FAVORITE_GREEN' }
+        ]
+      });
+      
+      
+      
     });
 
     // Return a '200 OK' response to all events
