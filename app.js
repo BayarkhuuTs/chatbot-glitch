@@ -25,19 +25,12 @@ app.post("/webhook", (req, res) => {
     console.log('nainuuuu');
     console.log('nainuuuu1222');
     let body = req.body;
-
+    console.log(body)
     if (body.object === "page") {
         body.entry.forEach(function(entry) {
             let webhook_event = entry.messaging[0];
             let sender_psid = webhook_event.sender.id;
 
-
-            // callSendAPIWithTemplate(sender_psid)
-            if (webhook_event.message) {
-                console.log(webhook_event.message)
-            } else if (webhook_event.postback) {
-                console.log(webhook_event.postback)
-            }
 
         });
         // Return a '200 OK' response to all events
