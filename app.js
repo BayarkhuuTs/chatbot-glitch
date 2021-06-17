@@ -25,7 +25,7 @@ app.post("/webhook", (req, res) => {
     console.log('nainuuuu');
     console.log('nainuuuu1222');
     let body = req.body;
-    console.log(body)
+    console.log(JSON.stringify(body))
     if (body.object === "page") {
         body.entry.forEach(function(entry) {
             let webhook_event = entry.messaging[0];
