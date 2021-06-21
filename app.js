@@ -45,6 +45,7 @@ app.post("/webhook", (req, res) => {
 
 // Accepts GET requests at the /webhook endpoint
 app.get("/webhook", (req, res) => {
+
   /** UPDATE YOUR VERIFY TOKEN **/
   const VERIFY_TOKEN = process.env.PAGE_ACCESS_TOKEN;
 
@@ -58,6 +59,10 @@ app.get("/webhook", (req, res) => {
     // Check the mode and token sent are correct
     if (mode === "subscribe" && token === VERIFY_TOKEN) {
       // Respond with 200 OK and challenge token from the request
+      console.log("WEBHOOK_VERIFIED");
+      console.log("WEBHOOK_VERIFIED");
+      console.log("WEBHOOK_VERIFIED");
+      console.log("WEBHOOK_VERIFIED");
       console.log("WEBHOOK_VERIFIED");
       res.status(200).send(challenge);
     } else {
